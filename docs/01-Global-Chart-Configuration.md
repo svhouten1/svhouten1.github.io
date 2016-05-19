@@ -27,6 +27,8 @@ defaultFontSize | Number | 12 | Default font size (in px) for text. Does not app
 defaultFontStyle | String | 'normal' | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title
 legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
 
+### Title
+
 The global options for the chart title is defined in `Chart.defaults.global.title`
 
 Name | Type | Default | Description
@@ -40,6 +42,8 @@ fontSize | Number | 12 |
 fontStyle | String | 'bold' |
 padding | Number | 10 | Number of pixels to add above and below the title text
 text | String | '' | Title text
+
+### Legend
 
 The global options for the chart legend is defined in `Chart.defaults.global.legend`
 
@@ -57,6 +61,8 @@ labels |Object|-|-
 *labels*.fontFamily | String | "Helvetica Neue" |
 *labels*.padding | Number | 10 | Padding between rows of colored boxes
 *labels*.generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
+
+### Tooltips
 
 The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
@@ -102,7 +108,9 @@ data | Object | | Data object passed to chart.
 *callbacks*.footer | Function | none | Text to render as the footer
 *callbacks*.afterFooter | Function | none | Text to render after the footer section
 
-The global options for animations are defined in `Chart.defaults.global.animation`.
+### Animation
+
+The following animation options are available. The global options for are defined in `Chart.defaults.global.animation`.
 
 Name | Type | Default | Description
 --- |:---:| --- | ---
@@ -111,8 +119,49 @@ easing | String | "easeOutQuart" | Easing function to use.
 onProgress | Function | none | Callback called on each step of an animation. Passed a single argument, an object, containing the chart instance and an object with details of the animation.
 onComplete | Function | none | Callback called at the end of an animation. Passed the same arguments as `onProgress`
 
-The global options for elements are defined in `Chart.defaults.global.elements`.
+#### Animation Callbacks
 
+The `onProgress` and `onComplete` callbacks are useful for synchronizing an external draw to the chart animation. The callback is passed an object that implements the following interface. An example usage of these callbacks can be found on [Github](https://github.com/chartjs/Chart.js/blob/master/samples/AnimationCallbacks/progress-bar.html). This sample displays a progress bar showing how far along the animation is.
+
+```javscript
+{
+    // Chart object
+    chartInstance,
+
+    // Contains details of the on-going animation
+    animationObject,
+}
+```
+
+#### Animation Object
+
+The animation object passed to the callbacks is of type `Chart.Animation`. The object has the following parameters.
+
+```javascript
+{
+    // Current Animation frame number
+    currentStep: Number,
+
+    // Number of animation frames
+    numSteps: Number,
+
+    // Animation easing to use
+    easing: String,
+
+    // Function that renders the chart
+    render: Function,
+
+    // User callback
+    onAnimationProgress: Function,
+
+    // User callback
+    onAnimationComplete: Function
+}
+```
+
+### Elements
+
+The global options for elements are defined in `Chart.defaults.global.elements`.
 Name | Type | Default | Description
 --- |:---:| --- | ---
 arc | Object | - | -
@@ -153,6 +202,7 @@ Chart.defaults.global.responsive = true;
 Now, every time we create a chart, `options.responsive` will be `true`.
 
 ### Colors
+
 When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. 
 
 You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient) object. You will need to create this before passing to the chart, but using it you can achieve some interesting effects.
