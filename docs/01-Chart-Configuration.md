@@ -25,43 +25,90 @@ This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow
 
 Chart.js merges the options object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults.global`. The defaults for each chart type are discussed in the documentation for that chart type.
 
+The following example would set the hover mode to 'single' for all charts where this was not overridden by the chart type defaults or the options passed to the constructor on creation.
+
+```javascript
+Chart.defaults.global.hover.mode = 'single';
+
+// Hover mode is set to single because it was not overridden here
+var chartInstanceHoverModeSingle = new Chart(ctx, {
+    type: 'line',
+    data: data,
+});
+
+// This chart would have the hover mode that was passed in
+var chartInstanceDifferentHoverMode = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        hover: {
+            // Overrides the global setting
+            mode: 'label'
+        }
+    }
+})
+```
+
+#### Global Font Settings
+
+There are 4 special global settings that can change all of the fonts on the chart. These options are in `Chart.defaults.global`.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+defaultFontColor | Color | '#666' | Default font color for all text
+defaultFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Default font family for all text
+defaultFontSize | Number | 12 | Default font size (in px) for text. Does not apply to radialLinear scale point labels
+defaultFontStyle | String | 'normal' | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title
+
+### Common Chart Configuration
+
+The following options are applicable to all charts. The can be set on the [global configuration](#chart-configuration-global-configuration), or they can be passed to the chart constructor.
+
 Name | Type | Default | Description
 --- | --- | --- | ---
 responsive | Boolean | true | Resizes when the canvas container does.
 responsiveAnimationDuration | Number | 0 | Duration in milliseconds it takes to animate to new size after a resize event.
 maintainAspectRatio | Boolean | true | Maintain the original canvas aspect ratio `(width / height)` when resizing
 events | Array[String] | `["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"]` | Events that the chart should listen to for tooltips and hovering
-hover |Object|-|-
-*hover*.onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
-*hover*.mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, or `'dataset'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value. `dataset` highlights the closest dataset.
-*hover*.animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
 onClick | Function | null | Called if the event is of type 'mouseup' or 'click'. Called in the context of the chart and passed an array of active elements
-defaultColor | Color | 'rgba(0,0,0,0.1)' |
-defaultFontColor | Color | '#666' | Default font color for all text
-defaultFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Default font family for all text
-defaultFontSize | Number | 12 | Default font size (in px) for text. Does not apply to radialLinear scale point labels
-defaultFontStyle | String | 'normal' | Default font style. Does not apply to tooltip title or footer. Does not apply to chart title
 legendCallback | Function | ` function (chart) { }` | Function to generate a legend. Receives the chart object to generate a legend from. Default implementation returns an HTML string.
 
-### Title
+### Title Configuration
 
-The global options for the chart title is defined in `Chart.defaults.global.title`
+The title configuration is passed into the `options.title` namespace. The global options for the chart title is defined in `Chart.defaults.global.title`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
-display | Boolean | false | Show the title block
-position | String | 'top' | Position of the title. 'top' or 'bottom' are allowed
+display | Boolean | false | Display the title block
+position | String | 'top' | Position of the title. Only 'top' or 'bottom' are currently allowed
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
-fontColor | Color  | '#666' | Text color
-fontFamily | String | 'Helvetica Neue' |
-fontSize | Number | 12 |
-fontStyle | String | 'bold' |
+fontSize | Number | 12 | Font size inherited from global configuration
+fontStyle | String | "normal" | Font style inherited from global configuration
+fontColor | Color | "#666" | Font color inherited from global configuration
+fontStyle | String | 'bold' | Font styling of the title. 
 padding | Number | 10 | Number of pixels to add above and below the title text
 text | String | '' | Title text
 
-### Legend
+#### Example Usage
 
-The global options for the chart legend is defined in `Chart.defaults.global.legend`
+The example below would enable a title of 'Custom Chart Title' on the chart that is created.
+
+```javascript
+var chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        title: {
+            display: true,
+            text: 'Custom Chart Title'
+        }
+    }
+})
+```
+
+### Legend Configuration
+
+The legend configuration is passed into the `options.legend` namespace. The global options for the chart legend is defined in `Chart.defaults.global.legend`.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
@@ -69,16 +116,77 @@ display | Boolean | true | Is the legend displayed
 position | String | 'top' | Position of the legend. Options are 'top' or 'bottom'
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 onClick | Function | `function(event, legendItem) {}` | A callback that is called when a click is registered on top of a label item
-labels |Object|-|-
-*labels*.boxWidth | Number | 40 | Width of coloured box
-*labels*.fontSize | Number | 12 | Font size
-*labels*.fontStyle | String | "normal" |
-*labels*.fontColor | Color | "#666" |
-*labels*.fontFamily | String | "Helvetica Neue" |
-*labels*.padding | Number | 10 | Padding between rows of colored boxes
-*labels*.generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. Styles that can be returned are `fillStyle`, `strokeStyle`, `lineCap`, `lineDash`, `lineDashOffset`, `lineWidth`, `lineJoin`. Return a `hidden` attribute to indicate that the label refers to something that is not visible. A strikethrough style will be given to the text in this case.
+labels |Object|-| See the [Legend Label Configuration](#chart-configuration-legend-label-configuration) section below.
 
-### Tooltips
+#### Legend Label Configuration
+
+The legend label configuration is nested below the legend configuration using the `labels` key.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+boxWidth | Number | 40 | Width of coloured box
+fontSize | Number | 12 | Font size inherited from global configuration
+fontStyle | String | "normal" | Font style inherited from global configuration
+fontColor | Color | "#666" | Font color inherited from global configuration
+fontFamily | String | "Helvetica Neue" | Font family inherited from global configuration
+padding | Number | 10 | Padding between rows of colored boxes
+generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#chart-configuration-legend-item-interface) for details.
+
+#### Legend Item Interface
+
+Items passed to the legend `onClick` function are the ones returned from `labels.generateLabels`. These items must implement the following interface.
+
+```javascript
+{
+    // Label that will be displayed
+    text: String,
+
+    // Fill style of the legend box
+    fillStyle: Color,
+
+    // If true, this item represents a hidden dataset. Label will be rendered with a strike-through effect
+    hidden: Boolean,
+
+    // For box border. See https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap
+    lineCap: String,
+
+    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash
+    lineDash: Array[Number],
+
+    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset
+    lineDashOffset: Number,
+
+    // For box border. See https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin
+    lineJoin: String,
+
+    // Width of box border 
+    lineWidth: Number,
+
+    // Stroke style of the legend box
+    strokeStyle: Color
+}
+```
+
+#### Example
+
+The following example will create a chart with the legend enabled and turn all of the text red in color.
+
+```javascript
+var chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: data,
+    options: {
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(255, 99, 132)'
+            }
+        }
+    }
+});
+```
+
+### Tooltip Configuration
 
 The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
 
@@ -124,7 +232,17 @@ data | Object | | Data object passed to chart.
 *callbacks*.footer | Function | none | Text to render as the footer
 *callbacks*.afterFooter | Function | none | Text to render after the footer section
 
-### Animation
+### Hover Configuration
+
+The hover configuration is passed into the `options.hover` namespace. The global hover configuration is at `Chart.defaults.global.hover`.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+mode | String | 'single' | Sets which elements hover. Acceptable options are `'single'`, `'label'`, or `'dataset'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value. `dataset` highlights the closest dataset.
+animationDuration | Number | 400 | Duration in milliseconds it takes to animate hover style changes
+onHover | Function | null | Called when any of the events fire. Called in the context of the chart and passed an array of active elements (bars, points, etc)
+
+### Animation Configuration
 
 The following animation options are available. The global options for are defined in `Chart.defaults.global.animation`.
 
@@ -175,7 +293,7 @@ The animation object passed to the callbacks is of type `Chart.Animation`. The o
 }
 ```
 
-### Elements
+### Element Configuration
 
 The global options for elements are defined in `Chart.defaults.global.elements`.
 Name | Type | Default | Description
@@ -219,7 +337,7 @@ Now, every time we create a chart, `options.responsive` will be `true`.
 
 ### Colors
 
-When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. 
+When supplying colors to Chart options, you can use a number of formats. You can specify the color as a string in hexadecimal, RGB, or HSL notations. If a color is needed, but not specified, Chart.js will use the global default color. This color is stored at `Chart.defaults.global.defaultColor`. It is initially set to 'rgb(0, 0, 0, 0.1)';
 
 You can also pass a [CanvasGradient](https://developer.mozilla.org/en-US/docs/Web/API/CanvasGradient) object. You will need to create this before passing to the chart, but using it you can achieve some interesting effects.
 
