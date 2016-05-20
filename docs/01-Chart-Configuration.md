@@ -1,13 +1,29 @@
 ---
-title: Global Chart Configuration
-anchor: global-chart-configuration
+title: Chart Configuration
+anchor: chart-configuration
 ---
+
+Chart.js provides a number of options for changing the behaviour of created charts. These configuration options can be changed on a per chart basis by passing in an options object when creating the chart. Alternatively, the global configuration can be changed which will be used by all charts created after that point.
+
+### Creating a Chart with Options
+
+To create a chart with configuration options, simply pass an object containing your configuration to the constructor. In the example below, a line chart is created and configured to not be responsive.
+
+```javascript
+var chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        responsive: false
+    }
+});
+```
+
+### Global Configuration
 
 This concept was introduced in Chart.js 1.0 to keep configuration DRY, and allow for changing options globally across chart types, avoiding the need to specify options for each instance, or the default for a particular chart type.
 
-Chart.js merges configurations and options in a few places with the global defaults using chart type defaults and scales defaults. This way you can be as specific as you want in your individual chart configs, or change the defaults for Chart.js as a whole.
-
-The global options are defined in `Chart.defaults.global`.
+Chart.js merges the options object passed to the chart with the global configuration using chart type defaults and scales defaults appropriately. This way you can be as specific as you would like in your individual chart configuration, while still changing the defaults for all chart types where applicable. The global general options are defined in `Chart.defaults.global`. The defaults for each chart type are discussed in the documentation for that chart type.
 
 Name | Type | Default | Description
 --- | --- | --- | ---
