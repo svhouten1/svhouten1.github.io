@@ -198,7 +198,7 @@ mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
 titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip title inherited from global font family
 titleFontSize | Number | 12 | Font size for tooltip title inherited from global font size
-titleFontStyle | String | title - "bold", body - "normal", footer - "bold" |
+titleFontStyle | String | "bold" |
 titleFontColor | Color | "#fff" | Font color for tooltip title
 titleSpacing | Number | 2 | Spacing to add to top and bottom of each title line.
 titleMarginBottom | Number | 6 | Margin to add on bottom of title section
