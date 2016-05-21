@@ -4,18 +4,21 @@ anchor: scales
 ---
 
 Scales in v2.0 of Chart.js are significantly more powerful, but also different than those of v1.0.
-* Multiple x & y axes are now supported.
-* A built-in label auto-skip feature now detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
-* Scale titles are now supported
+* Multiple X & Y axes are supported.
+* A built-in label auto-skip feature detects would-be overlapping ticks and labels and removes every nth label to keep things displaying normally.
+* Scale titles are supported
 * New scale types can be extended without writing an entirely new chart type
+
+
+### Common Configuration
 
 Every scale extends a core scale class with the following options:
 
 Name | Type | Default | Description
---- |:---:| --- | ---
+--- | --- | --- | ---
 type | String | Chart specific. | Type of scale being employed. Custom scales can be created and registered with a string key. Options: ["category"](#scales-category-scale), ["linear"](#scales-linear-scale), ["logarithmic"](#scales-logarithmic-scale), ["time"](#scales-time-scale), ["radialLinear"](#scales-radial-linear-scale)
 display | Boolean | true | If true, show the scale including gridlines, ticks, and labels. Overrides *gridLines.display*, *scaleLabel.display*, and *ticks.display*.
-position | String | "left" | Position of the scale. Possible values are top, left, bottom and right.
+position | String | "left" | Position of the scale. Possible values are 'top', 'left', 'bottom' and 'right'.
 beforeUpdate | Function | undefined | Callback called before the update process starts. Passed a single argument, the scale instance.
 beforeSetDimensions | Function | undefined | Callback that runs before dimensions are set. Passed a single argument, the scale instance.
 afterSetDimensions | Function | undefined | Callback that runs after dimensions are set. Passed a single argument, the scale instance.
@@ -30,64 +33,87 @@ afterCalculateTickRotation | Function | undefined | Callback that runs after tic
 beforeFit | Function | undefined | Callback that runs before the scale fits to the canvas. Passed a single argument, the scale instance.
 afterFit | Function | undefined | Callback that runs after the scale fits to the canvas. Passed a single argument, the scale instance.
 afterUpdate | Function | undefined | Callback that runs at the end of the update process. Passed a single argument, the scale instance.
-**gridLines** | Object | - | Options for the grid lines that run perpendicular to the axis.
-*gridLines*.display | Boolean | true |
-*gridLines*.color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
-*gridLines*.lineWidth | Number | 1 | Stroke width of grid lines
-*gridLines*.drawBorder | Boolean | true | If true draw border on the edge of the chart
-*gridLines*.drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn
-*gridLines*.drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis area beside the chart.
-*gridLines*.tickMarkLength | Number | 10 | Length in pixels that the grid lines will draw into the axis area.
-*gridLines*.zeroLineWidth | Number | 1 | Stroke width of the grid line for the first index (index 0).
-*gridLines*.zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
-*gridLines*.offsetGridLines | Boolean | false | If true, offset labels from grid lines.
-**scaleLabel** | Object | | Title for the entire axis.
-*scaleLabel*.display | Boolean | false |
-*scaleLabel*.labelString | String | "" | The text for the title. (i.e. "# of People", "Response Choices")
-*scaleLabel*.fontColor | Color | "#666" | Font color for the scale title.
-*scaleLabel*.fontFamily| String | "Helvetica Neue" | Font family for the scale title, follows CSS font-family options.
-*scaleLabel*.fontSize | Number | 12 | Font size for the scale title.
-*scaleLabel*.fontStyle | String | "normal" | Font style for the scale title, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
-**ticks** | Object | | Settings for the labels that run along the axis.
-*ticks*.beginAtZero | Boolean | false | If true the scale will be begin at 0, if false the ticks will begin at your smallest data value.
-*ticks*.fontColor | Color | "#666" | Font color for the tick labels.
-*ticks*.fontFamily | String | "Helvetica Neue" | Font family for the tick labels, follows CSS font-family options.
-*ticks*.fontSize | Number | 12 | Font size for the tick labels.
-*ticks*.fontStyle | String | "normal" | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
-*ticks*.minRotation | Number | 0 | Minimum rotation for tick labels
-*ticks*.maxRotation | Number | 90 | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
-*ticks*.minRotation | Number |  20 | *currently not-implemented* Minimum rotation for tick labels when condensing is necessary.  *Note: Only applicable to horizontal scales.*
-*ticks*.maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
-*ticks*.padding | Number | 10 | Padding between the tick label and the axis. *Note: Only applicable to horizontal scales.*
-*ticks*.labelOffset | Number | 0 | Distance in pixels to offset the label from the centre point of the tick (in the y direction for the x axis, and the x direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
-*ticks*.mirror | Boolean | false | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
-*ticks*.reverse | Boolean | false | Reverses order of tick labels.
-*ticks*.display | Boolean | true | If true, show the ticks.
-*ticks*.suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
-*ticks*.suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
-*ticks*.min | Number | - | User defined minimum number for the scale, overrides minimum value.
-*ticks*.max | Number | - | User defined maximum number for the scale, overrides maximum value
-*ticks*.autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
-*ticks*.callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart.
+**gridLines** | Object | - | See [grid line configuration](#scales-grid-line-configuration) section.
+**scaleLabel** | Object | | See [scale title configuration](#scales-scale-title-configuration) section.
+**ticks** | Object | | See [ticks configuration](#scales-ticks-configuration) section.
 
-The `callback` method may be used for advanced tick customization. The following callback would display every label in scientific notation
+#### Grid Line Configuration
+
+The grid line configuration is nested under the scale configuration in the `gridLines` key. It defines options for the grid lines that run perpendicular to the axis.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+display | Boolean | true |
+color | Color | "rgba(0, 0, 0, 0.1)" | Color of the grid lines.
+lineWidth | Number | 1 | Stroke width of grid lines
+drawBorder | Boolean | true | If true draw border on the edge of the chart
+drawOnChartArea | Boolean | true | If true, draw lines on the chart area inside the axis lines. This is useful when there are multiple axes and you need to control which grid lines are drawn
+drawTicks | Boolean | true |  If true, draw lines beside the ticks in the axis area beside the chart.
+tickMarkLength | Number | 10 | Length in pixels that the grid lines will draw into the axis area.
+zeroLineWidth | Number | 1 | Stroke width of the grid line for the first index (index 0).
+zeroLineColor | Color | "rgba(0, 0, 0, 0.25)" | Stroke color of the grid line for the first index (index 0).
+offsetGridLines | Boolean | false | If true, offset labels from grid lines.
+
+#### Scale Title Configuration
+
+The grid line configuration is nested under the scale configuration in the `scaleLabel` key. It defines options for the scale title.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+display | Boolean | false |
+labelString | String | "" | The text for the title. (i.e. "# of People", "Response Choices")
+fontColor | Color | "#666" | Font color for the scale title.
+fontFamily| String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for the scale title, follows CSS font-family options.
+fontSize | Number | 12 | Font size for the scale title.
+fontStyle | String | "normal" | Font style for the scale title, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
+
+#### Tick Configuration
+
+The grid line configuration is nested under the scale configuration in the `ticks` key. It defines options for the tick marks that are generated by the axis.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+autoSkip | Boolean | true | If true, automatically calculates how many labels that can be shown and hides labels accordingly. Turn it off to show all labels no matter what
+callback | Function | `function(value) { return '' + value; } ` | Returns the string representation of the tick value as it should be displayed on the chart. See [callback](#scales-creating-custom-tick-formats) section below.
+display | Boolean | true | If true, show the ticks.
+fontColor | Color | "#666" | Font color for the tick labels.
+fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for the tick labels, follows CSS font-family options.
+fontSize | Number | 12 | Font size for the tick labels.
+fontStyle | String | "normal" | Font style for the tick labels, follows CSS font-style options (i.e. normal, italic, oblique, initial, inherit).
+labelOffset | Number | 0 | Distance in pixels to offset the label from the centre point of the tick (in the y direction for the x axis, and the x direction for the y axis). *Note: this can cause labels at the edges to be cropped by the edge of the canvas*
+maxRotation | Number | 90 | Maximum rotation for tick labels when rotating to condense labels. Note: Rotation doesn't occur until necessary. *Note: Only applicable to horizontal scales.*
+minRotation | Number | 0 | Minimum rotation for tick labels. *Note: Only applicable to horizontal scales.*
+mirror | Boolean | false | Flips tick labels around axis, displaying the labels inside the chart instead of outside. *Note: Only applicable to vertical scales.*
+padding | Number | 10 | Padding between the tick label and the axis. *Note: Only applicable to horizontal scales.*
+reverse | Boolean | false | Reverses order of tick labels.
+
+#### Creating Custom Tick Formats
+
+The `callback` method may be used for advanced tick customization. In the following example, every label of the Y axis would be displayed in scientific notation.
+
+If the callback returns `null` or `undefined` the associated grid line will be hidden.
+
 ```javascript
-{
-    scales: {
-        xAxes: [{
-            ticks: {
-                // Return an empty string to draw the tick line but hide the tick label
-                // Return `null` or `undefined` to hide the tick line entirely
-               	userCallback: function(value, index, values) {
-    				return value.toExponential();
-    			}
-            }
-        }]
+var chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    // Create scientific notation labels
+                    callback: function(value, index, values) {
+                        return value.toExponential();
+                    }
+                }
+            }]
+        }
     }
-}
+});
 ```
 
 ### Category Scale
+
 The category scale will be familiar to those who have used v1.0. Labels are drawn in from the labels array included in the chart data.
 
 The category scale extends the core scale class with the following tick template:
@@ -101,6 +127,14 @@ The category scale extends the core scale class with the following tick template
 The `ticks.min` and `ticks.max` attributes may be used with the category scale. Unlike other scales, the value of these attributes must simply be something that can be found in the `labels` array of the data object.
 
 ### Linear Scale
+
+beginAtZero | Boolean | - | if true, scale will inclulde 0 if it is not already included.
+suggestedMin | Number | - | User defined minimum number for the scale, overrides minimum value *except for if* it is higher than the minimum value.
+suggestedMax | Number | - | User defined maximum number for the scale, overrides maximum value *except for if* it is lower than the maximum value.
+min | Number | - | User defined minimum number for the scale, overrides minimum value.
+max | Number | - | User defined maximum number for the scale, overrides maximum value
+maxTicksLimit | Number | 11 | Maximum number of ticks and gridlines to show. If not defined, it will limit to 11 ticks but will show all gridlines.
+
 The linear scale can be used to display numerical data. It can be placed on either the x or y axis. The scatter chart type automatically configures a line chart to use one of these scales for the x axis.
 
 The linear scale extends the core scale class with the following tick template:
@@ -144,6 +178,7 @@ Name | Type | Default | Description
 *ticks*.stepSize | Number | - | User defined fixed step size for the scale. If set, the scale ticks will be enumerated by multiple of stepSize, having one tick per increment. If not set, the ticks are labeled automatically using the nice numbers algorithm.
 
 ### Logarithmic Scale
+
 The logarithmic scale is used to display logarithmic data of course. It can be placed on either the x or y axis.
 
 The log scale extends the core scale class with the following tick template:
@@ -166,6 +201,7 @@ The log scale extends the core scale class with the following tick template:
 ```
 
 ### Time Scale
+
 The time scale is used to display times and dates. It can be placed on the x axis. When building its ticks, it will automatically calculate the most comfortable unit base on the size of the scale.
 
 The time scale extends the core scale class with the following tick template:
@@ -251,7 +287,8 @@ The following time measurements are supported:
 ```
 
 ### Radial Linear Scale
-The radial linear scale is used specifically for the radar chart type.
+
+The radial linear scale is used specifically for the radar and polar are chart types.
 
 The radial linear scale extends the core scale class with the following tick template:
 
@@ -307,6 +344,7 @@ The radial linear scale extends the core scale class with the following tick tem
 ```
 
 ### Update Default Scale config
+
 The default configuration for a scale can be easily changed using the scale service. Pass in a partial configuration that will be merged with the current scale default configuration.
 
 For example, to set the minimum value of 0 for all linear scales, you would do the following. Any linear scales created after this time would now have a minimum of 0.
