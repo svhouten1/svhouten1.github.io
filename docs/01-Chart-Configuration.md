@@ -325,44 +325,59 @@ The animation object passed to the callbacks is of type `Chart.Animation`. The o
 
 The global options for elements are defined in `Chart.defaults.global.elements`.
 
+Options can be configured for four different types of elements; arc, lines, points, and rectangles. When set, these options apply to all objects of that type unless specifically overridden by the configuration attached to a dataset.
+
+#### Arc Configuration
+
+Arcs are used in the polar area, doughnut and pie charts. They can be configured with the following options. The global arc options are stored in `Chart.defaults.global.elements.arc`.
+
 Name | Type | Default | Description
---- |:---:| --- | ---
-arc | Object | - | -
-*arc*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default fill color for arcs
-*arc*.borderColor | Color | "#fff" | Default stroke color for arcs
-*arc*.borderWidth | Number | 2 | Default stroke width for arcs
-line | Object | - | -
-*line*.tension | Number | 0.4 | Default bezier curve tension. Set to `0` for no bezier curves.
-*line*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default line fill color
-*line*.borderWidth | Number | 3 | Default line stroke width
-*line*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default line stroke color
-*line*.borderCapStyle | String | 'butt' | Default line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap)
-*line*.borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
-*line*.borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
-*line*.borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
-*line*.fill | Boolean | true |
-point | Object | - | -
-*point*.radius | Number | 3 | Default point radius
-*point*.pointStyle | String | 'circle' | Default point style
-*point*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default point fill color
-*point*.borderWidth | Number | 1 | Default point stroke width
-*point*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default point stroke color
-*point*.hitRadius | Number | 1 | Extra radius added to point radius for hit detection
-*point*.hoverRadius | Number | 4 | Default point radius when hovered
-*point*.hoverBorderWidth | Number | 1 | Default stroke width when hovered
-rectangle | Object | - | -
-*rectangle*.backgroundColor | Color | `Chart.defaults.global.defaultColor` | Default bar fill color
-*rectangle*.borderWidth | Number | 0 | Default bar stroke width
-*rectangle*.borderColor | Color | `Chart.defaults.global.defaultColor` | Default bar stroke color
-*rectangle*.borderSkipped | String | 'bottom' | Default skipped (excluded) border for rectangle. Can be one of `bottom`, `left`, `top`, `right`
+--- | --- | --- | ---
+backgroundColor | Color | 'rgba(0,0,0,0.1)' | Default fill color for arcs. Inherited from the global default 
+borderColor | Color | '#fff' | Default stroke color for arcs
+borderWidth | Number | 2 | Default stroke width for arcs
 
-If for example, you wanted all charts created to be responsive, and resize when the browser window does, the following setting can be changed:
+#### Line Configuration
 
-```javascript
-Chart.defaults.global.responsive = true;
-```
+Line elements are used to represent the line in a line chart. The global line options are stored in `Chart.defaults.global.elements.line`.
 
-Now, every time we create a chart, `options.responsive` will be `true`.
+Name | Type | Default | Description
+--- | --- | --- | ---
+tension | Number | 0.4 | Default bezier curve tension. Set to `0` for no bezier curves.
+backgroundColor | Color | 'rgba(0,0,0,0.1)' | Default line fill color
+borderWidth | Number | 3 | Default line stroke width
+borderColor | Color | 'rgba(0,0,0,0.1)' | Default line stroke color
+borderCapStyle | String | 'butt' | Default line cap style. See [MDN](https://developer.mozilla.org/en/docs/Web/API/CanvasRenderingContext2D/lineCap)
+borderDash | Array | `[]` | Default line dash. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash)
+borderDashOffset | Number | 0.0 | Default line dash offset. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineDashOffset)
+borderJoinStyle | String | 'miter' | Default line join style. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/lineJoin)
+fill | Boolean | true | If true, the line is filled.
+
+#### Point Configuration
+
+Point elements are used to represent the points in a line chart or a bubble chart. The global point options are stored in `Chart.defaults.global.elements.point`.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+radius | Number | 3 | Default point radius
+pointStyle | String | 'circle' | Default point style
+backgroundColor | Color | 'rgba(0,0,0,0.1)' | Default point fill color
+borderWidth | Number | 1 | Default point stroke width
+borderColor | Color | 'rgba(0,0,0,0.1)' | Default point stroke color
+hitRadius | Number | 1 | Extra radius added to point radius for hit detection
+hoverRadius | Number | 4 | Default point radius when hovered
+hoverBorderWidth | Number | 1 | Default stroke width when hovered
+
+#### Rectangle Configuration
+
+Rectangle elements are used to represent the bars in a bar chart. The global rectangle options are stored in `Chart.defaults.global.elements.rectange`.
+
+Name | Type | Default | Description
+--- | --- | --- | ---
+backgroundColor | Color | 'rgba(0,0,0,0.1)' | Default bar fill color
+borderWidth | Number | 0 | Default bar stroke width
+borderColor | Color | 'rgba(0,0,0,0.1)' | Default bar stroke color
+borderSkipped | String | 'bottom' | Default skipped (excluded) border for rectangle. Can be one of `bottom`, `left`, `top`, `right`
 
 ### Colors
 
