@@ -83,7 +83,7 @@ display | Boolean | false | Display the title block
 position | String | 'top' | Position of the title. Only 'top' or 'bottom' are currently allowed
 fullWidth | Boolean | true | Marks that this box should take the full width of the canvas (pushing down other boxes)
 fontSize | Number | 12 | Font size inherited from global configuration
-fontStyle | String | "normal" | Font style inherited from global configuration
+fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family inherited from global configuration
 fontColor | Color | "#666" | Font color inherited from global configuration
 fontStyle | String | 'bold' | Font styling of the title. 
 padding | Number | 10 | Number of pixels to add above and below the title text
@@ -128,7 +128,7 @@ boxWidth | Number | 40 | Width of coloured box
 fontSize | Number | 12 | Font size inherited from global configuration
 fontStyle | String | "normal" | Font style inherited from global configuration
 fontColor | Color | "#666" | Font color inherited from global configuration
-fontFamily | String | "Helvetica Neue" | Font family inherited from global configuration
+fontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family inherited from global configuration
 padding | Number | 10 | Padding between rows of colored boxes
 generateLabels: | Function | `function(chart) {  }` | Generates legend items for each thing in the legend. Default implementation returns the text + styling for the color box. See [Legend Item](#chart-configuration-legend-item-interface) for details.
 
@@ -188,49 +188,77 @@ var chartInstance = new Chart(ctx, {
 
 ### Tooltip Configuration
 
-The global options for tooltips are defined in `Chart.defaults.global.tooltips`.
+The title configuration is passed into the `options.tooltips` namespace. The global options for the chart tooltips is defined in `Chart.defaults.global.title`.
 
 Name | Type | Default | Description
---- |:---:| --- | ---
-enabled | Boolean | true |
-custom | | null |
+--- | --- | --- | ---
+enabled | Boolean | true | Are tooltips 
+custom | Function | null | See [section](#chart-configuration-custom-tooltips) below
 mode | String | 'single' | Sets which elements appear in the tooltip. Acceptable options are `'single'` or `'label'`. `single` highlights the closest element. `label` highlights elements in all datasets at the same `X` value.
 backgroundColor | Color | 'rgba(0,0,0,0.8)' | Background color of the tooltip
- | | |
-Label | | | There are three labels you can control. `title`, `body`, `footer` the star (\*) represents one of these three. *(i.e. titleFontFamily, footerSpacing)*
-\*FontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" |
-\*FontSize | Number | 12 |
-\*FontStyle | String | title - "bold", body - "normal", footer - "bold" |
-\*Spacing | Number | 2 |
-\*Color | Color | "#fff" |
-\*Align | String | "left" | text alignment. See [MDN Canvas Documentation](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/textAlign)
+titleFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip title inherited from global font family
+titleFontSize | Number | 12 | Font size for tooltip title inherited from global font size
+titleFontStyle | String | title - "bold", body - "normal", footer - "bold" |
+titleFontColor | Color | "#fff" | Font color for tooltip title
+titleSpacing | Number | 2 | Spacing to add to top and bottom of each title line.
 titleMarginBottom | Number | 6 | Margin to add on bottom of title section
+bodyFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip items inherited from global font family
+bodyFontSize | Number | 12 | Font size for tooltip items inherited from global font size
+bodyFontStyle | String | "normal" |
+bodyFontColor | Color | "#fff" | Font color for tooltip items.
+bodySpacing | Number | 2 | Spacing to add to top and bottom of each tooltip item
+footerFontFamily | String | "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif" | Font family for tooltip footer inherited from global font family.
+footerFontSize | Number | 12 | Font size for tooltip footer inherited from global font size.
+footerFontStyle | String | "bold" | Font style for tooltip footer.
+footerFontColor | Color | "#fff" | Font color for tooltip footer.
+footerSpacing | Number | 2 | Spacing to add to top and bottom of each footer line.
 footerMarginTop | Number | 6 | Margin to add before drawing the footer
 xPadding | Number | 6 | Padding to add on left and right of tooltip
 yPadding | Number | 6 | Padding to add on top and bottom of tooltip
 caretSize | Number | 5 | Size, in px, of the tooltip arrow
 cornerRadius | Number | 6 | Radius of tooltip corner curves
 multiKeyBackground | Color | "#fff" | Color to draw behind the colored boxes when multiple items are in the tooltip
- | | |
-callbacks | Object | - |  V2.0 introduces callback functions as a replacement for the template engine in v1. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object create from the Chart.Tooltip constructor
-**Callback Functions** | | | All functions are called with the same arguments
-xLabel | String or Array[Strings] | | This is the xDataValue for each item to be displayed in the tooltip
-yLabel | String or Array[Strings] | | This is the yDataValue for each item to be displayed in the tooltip
-index | Number | | Data index.
-data | Object | | Data object passed to chart.
-`return`| String or Array[Strings] | | All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
- | | |
-*callbacks*.beforeTitle | Function | none | Text to render before the title
-*callbacks*.title | Function | `function(tooltipItems, data) { //Pick first xLabel }` | Text to render as the title
-*callbacks*.afterTitle | Function | none | Text to render after the ttiel
-*callbacks*.beforeBody | Function | none | Text to render before the body section
-*callbacks*.beforeLabel | Function | none | Text to render before an individual label
-*callbacks*.label | Function | `function(tooltipItem, data) { // Returns "datasetLabel: tooltipItem.yLabel" }` | Text to render as label
-*callbacks*.afterLabel | Function | none | Text to render after an individual label
-*callbacks*.afterBody | Function | none | Text to render after the body section
-*callbacks*.beforeFooter | Function | none | Text to render before the footer section
-*callbacks*.footer | Function | none | Text to render as the footer
-*callbacks*.afterFooter | Function | none | Text to render after the footer section
+callbacks | Object | | See the [callbacks section](#chart-configuration-tooltip-callbacks) below
+
+#### Tooltip Callbacks
+
+The tooltip label configuration is nested below the tooltip configuration using the `callbacks` key. The tooltip has the following callbacks for providing text. For all functions, 'this' will be the tooltip object created from the Chart.Tooltip constructor. 
+
+All functions are called with the same arguments: a [tooltip item](#chart-configuration-tooltip-item-interface) and the data object passed to the chart. All functions must return either a string or an array of strings. Arrays of strings are treated as multiple lines of text.
+
+Callback | Arguments | Description
+--- | --- | ---
+beforeTitle | `Array[tooltipItem], data` | Text to render before the title
+title | `Array[tooltipItem], data` | Text to render as the title
+afterTitle | `Array[tooltipItem], data` | Text to render after the title
+beforeBody | `Array[tooltipItem], data` | Text to render before the body section
+beforeLabel | `tooltipItem, data` | Text to render before an individual label
+label | `tooltipItem, data` | Text to render for an individual item in the tooltip
+afterLabel | `tooltipItem, data` | Text to render after an individual label
+afterBody | `Array[tooltipItem], data` | Text to render after the body section
+beforeFooter | `Array[tooltipItem], data` | Text to render before the footer section
+footer | `Array[tooltipItem], data` | Text to render as the footer
+afterFooter | `Array[tooltipItem], data` | Text to render after the footer section
+
+#### Tooltip Item Interface
+
+The tooltip items passed to the tooltip callbacks implement the following interface.
+
+```javascript
+{
+    // X Value of the tooltip as a string
+    xLabel: String,
+
+    // Y value of the tooltip as a string
+    yLabel: String,
+
+    // Index of the dataset the item comes from
+    datasetIndex: Number,
+
+    // Index of this data item in the dataset
+    index: Number
+}
+```
 
 ### Hover Configuration
 
@@ -296,6 +324,7 @@ The animation object passed to the callbacks is of type `Chart.Animation`. The o
 ### Element Configuration
 
 The global options for elements are defined in `Chart.defaults.global.elements`.
+
 Name | Type | Default | Description
 --- |:---:| --- | ---
 arc | Object | - | -
